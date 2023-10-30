@@ -1,12 +1,18 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS pgml;
+
 CREATE TABLE IF NOT EXISTS summary (
     id serial primary key,
     session_id varchar(255),
-    context text
+    title varchar(255),
+    content text,
+    embeddings vector
 );
 
 CREATE TABLE IF NOT EXISTS full_text (
     id serial primary key,
     session_id varchar(255),
+    title varchar(255),
     sequence int,
-    context text
+    content text
 )

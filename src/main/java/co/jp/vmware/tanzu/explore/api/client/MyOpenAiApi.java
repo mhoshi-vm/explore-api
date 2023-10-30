@@ -35,11 +35,11 @@ public interface MyOpenAiApi extends OpenAiApi {
     @GET("/v1/models/{model_id}")
     Single<Model> getModel(@Path("model_id") String var1);
 
-    @POST("/v1/completions")
+    @POST("v1/completions")
     Single<CompletionResult> createCompletion(@Body CompletionRequest var1);
 
     @Streaming
-    @POST("/v1/completions")
+    @POST("v1/completions")
     Call<ResponseBody> createCompletionStream(@Body CompletionRequest var1);
 
     @POST("v1/chat/completions")

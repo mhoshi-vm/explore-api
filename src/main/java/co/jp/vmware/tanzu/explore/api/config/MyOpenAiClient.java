@@ -82,7 +82,7 @@ public class MyOpenAiClient extends OpenAiClient {
             if (intext == null) {
                 return;
             }
-            System.out.printf(intext);
+                System.out.printf(intext);
         }, Throwable::printStackTrace, openAiService::shutdownExecutor);
     }
 }

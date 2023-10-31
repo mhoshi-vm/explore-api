@@ -8,10 +8,7 @@ import co.jp.vmware.tanzu.explore.api.service.SummaryService;
 import com.theokanning.openai.completion.chat.ChatCompletionChunk;
 import io.reactivex.Flowable;
 import org.springframework.ai.prompt.messages.UserMessage;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalTime;
@@ -36,6 +33,7 @@ public class AiController {
         this.fullTextService = fullTextService;
     }
 
+    @CrossOrigin
     @GetMapping("/search")
     public List<Summary> getSummaries(@RequestParam(defaultValue = "aaa") String prompt, @RequestParam(defaultValue = "20") Integer limit) {
         return summaryService.get(prompt, limit);

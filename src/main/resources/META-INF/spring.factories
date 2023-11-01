@@ -1,2 +1,3 @@
 org.springframework.cloud.bindings.boot.BindingsPropertiesProcessor=\
-  co.jp.vmware.tanzu.explore.api.config.MyOpenAiServiceBindings
+  co.jp.vmware.tanzu.explore.api.config.MyOpenAiServiceBindings, \
+  co.jp.vmware.tanzu.explore.api.config.MyWfServiceBindings

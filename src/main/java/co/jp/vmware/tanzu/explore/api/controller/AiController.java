@@ -1,17 +1,16 @@
 package co.jp.vmware.tanzu.explore.api.controller;
 
 import co.jp.vmware.tanzu.explore.api.config.MyOpenAiClient;
-import co.jp.vmware.tanzu.explore.api.record.FullText;
 import co.jp.vmware.tanzu.explore.api.record.Summary;
 import co.jp.vmware.tanzu.explore.api.service.FullTextService;
 import co.jp.vmware.tanzu.explore.api.service.SummaryService;
-import com.theokanning.openai.completion.chat.ChatCompletionChunk;
-import io.reactivex.Flowable;
-import org.springframework.ai.prompt.messages.UserMessage;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import retrofit2.http.Streaming;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,19 +38,20 @@ public class AiController {
         return summaryService.get(prompt, limit);
     }
 
+    @CrossOrigin
     @GetMapping("/summarize")
-    public SseEmitter streamChat(@RequestParam(defaultValue = "tell me a joke!") String user) {
+    public SseEmitter streamChat(@RequestParam(defaultValue = "tell me a joke!") String userText) {
 
-        SseEmitter emitter = new SseEmitter(0L);/*
+        SseEmitter emitter = new SseEmitter(-1L);
         ExecutorService sseMvcExecutor = Executors.newSingleThreadExecutor();
         sseMvcExecutor.execute(() -> {
             try {
-                openAiClient.streamChat(emitter, user, 4000);
-                //emitter.complete();
+                openAiClient.streamChat(emitter, userText, 4000);
+                emitter.complete();
             } catch (Exception e) {
                 emitter.completeWithError(e);
             }
-        });*/
+        });
         return emitter;
     }
 

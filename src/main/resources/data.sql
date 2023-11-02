@@ -1,5 +1,4 @@
 
-
 INSERT INTO summary (session_id, title, content) VALUES ('A1', 'Session1', 'AAAA');
 INSERT INTO summary (session_id, title, content) VALUES ('B1', 'Session2', 'BBBB');
 INSERT INTO summary (session_id, title, content) VALUES ('C1', 'Session3', 'CCCC');

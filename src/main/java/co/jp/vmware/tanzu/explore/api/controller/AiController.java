@@ -5,14 +5,13 @@ import co.jp.vmware.tanzu.explore.api.record.FullText;
 import co.jp.vmware.tanzu.explore.api.record.Summary;
 import co.jp.vmware.tanzu.explore.api.service.FullTextService;
 import co.jp.vmware.tanzu.explore.api.service.SummaryService;
+import com.theokanning.openai.completion.CompletionChunk;
+import io.reactivex.Flowable;
 import org.springframework.ai.prompt.messages.Message;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping("/api")
@@ -38,24 +37,18 @@ public class AiController {
     }
 
     @CrossOrigin
-    @PostMapping(path = "/summarize",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter streamChat(@RequestParam String sessionId,
-                                 @RequestParam(defaultValue = "1") Integer sequence,
-                                 @RequestParam(defaultValue = "") String userText) {
+    @PostMapping(path = "/summarize", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flowable<String> streamChat(@RequestParam String sessionId,
+                                                @RequestParam(defaultValue = "1") Integer sequence,
+                                                @RequestParam(defaultValue = "") String userText) {
 
         List<FullText> fullTexts = fullTextService.getSessionContent(sessionId,sequence);
         Message message = fullTextService.getPrompt(fullTexts.get(0).content(), userText);
 
-        SseEmitter emitter = new SseEmitter(-1L);
-        ExecutorService sseMvcExecutor = Executors.newSingleThreadExecutor();
-        sseMvcExecutor.execute(() -> {
-            try {
-                openAiClient.sseCompletion(emitter, message.getContent(), 4000);
-            } catch (Exception e) {
-                emitter.completeWithError(e);
-            }
-        });
-        return emitter;
-    }
+        Flowable<CompletionChunk> result = openAiClient.streamCompletion(message.getContent(), 4000);
 
+        return result.filter(completionChunk ->
+                completionChunk.getChoices().get(0)!= null).map(
+                completionChunk -> completionChunk.getChoices().get(0).getText());
+    }
 }

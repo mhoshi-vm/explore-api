@@ -39,16 +39,16 @@ public class AiController {
     @CrossOrigin
     @PostMapping(path = "/summarize", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flowable<String> streamChat(@RequestParam String sessionId,
-                                                @RequestParam(defaultValue = "1") Integer sequence,
-                                                @RequestParam(defaultValue = "") String userText) {
+                                       @RequestParam(defaultValue = "1") Integer sequence,
+                                       @RequestParam(defaultValue = "") String userText) {
 
-        List<FullText> fullTexts = fullTextService.getSessionContent(sessionId,sequence);
+        List<FullText> fullTexts = fullTextService.getSessionContent(sessionId, sequence);
         Message message = fullTextService.getPrompt(fullTexts.get(0).content(), userText);
 
         Flowable<CompletionChunk> result = openAiClient.streamCompletion(message.getContent(), 4000);
 
         return result.filter(completionChunk ->
-                completionChunk.getChoices().get(0)!= null).map(
+                completionChunk.getChoices().get(0) != null).map(
                 completionChunk -> completionChunk.getChoices().get(0).getText());
     }
 }

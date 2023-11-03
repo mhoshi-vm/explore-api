@@ -24,7 +24,7 @@ public class FullTextService {
     }
 
     public List<FullText> getSessionContent(String sessionId, Integer sequence) {
-        return fullTextRepo.findBySessionIdAndSequence(sessionId,sequence);
+        return fullTextRepo.findBySessionIdAndSequence(sessionId, sequence);
     }
 
 

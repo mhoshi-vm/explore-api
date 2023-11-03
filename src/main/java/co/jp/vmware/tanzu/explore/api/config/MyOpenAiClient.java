@@ -28,8 +28,7 @@ public class MyOpenAiClient extends OpenAiClient {
                 .n(1)
                 .logitBias(new HashMap<>())
                 .build();
-        // https://github.com/TheoKanning/openai-java/issues/266
-        // https://github.com/TheoKanning/openai-java/pull/195#issuecomment-1491910765
+
         return openAiService.streamCompletion(completionRequest);
     }
 }

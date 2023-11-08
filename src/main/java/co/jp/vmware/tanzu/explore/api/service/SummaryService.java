@@ -38,7 +38,7 @@ public class SummaryService {
     public List<Summary> get(String prompt, Integer limit) {
         SummaryMapper recordMapper = new SummaryMapper();
         return this.jdbcTemplate.query(
-                "SELECT DISTINCT ON (distance) id, session_id, title, content, pgml.embed(?, ?)::vector <-> embeddings AS distance FROM summary ORDER BY distance LIMIT ?",
+                "SELECT id, session_id, title, content, pgml.embed(?, ?)::vector <-> embeddings AS distance FROM summary ORDER BY distance LIMIT ?",
                 recordMapper, this.embeddingModels, prompt, limit);
     }
 

@@ -1,12 +1,13 @@
 package co.jp.vmware.tanzu.explore.api.config;
 
-import com.theokanning.openai.completion.CompletionChunk;
-import com.theokanning.openai.completion.CompletionRequest;
+import com.theokanning.openai.completion.chat.ChatCompletionChunk;
+import com.theokanning.openai.completion.chat.ChatCompletionRequest;
+import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.service.OpenAiService;
 import io.reactivex.Flowable;
 import org.springframework.ai.openai.client.OpenAiClient;
 
-import java.util.HashMap;
+import java.util.List;
 
 public class MyOpenAiClient extends OpenAiClient {
 
@@ -17,18 +18,14 @@ public class MyOpenAiClient extends OpenAiClient {
         this.openAiService = openAiService;
     }
 
-    public Flowable<CompletionChunk> streamCompletion(String prompt, Integer maxTokens) {
+    public Flowable<ChatCompletionChunk> streamCompletion(String prompt) {
 
-        CompletionRequest completionRequest = CompletionRequest.builder()
+        ChatCompletionRequest completionRequest = ChatCompletionRequest.builder()
                 .model(super.getModel())
                 .temperature(super.getTemperature())
-                .prompt(prompt)
-                .stream(true)
-                .maxTokens(maxTokens)
-                .n(1)
-                .logitBias(new HashMap<>())
+                .messages(List.of(new ChatMessage("user", prompt)))
                 .build();
 
-        return openAiService.streamCompletion(completionRequest);
+        return openAiService.streamChatCompletion(completionRequest);
     }
 }

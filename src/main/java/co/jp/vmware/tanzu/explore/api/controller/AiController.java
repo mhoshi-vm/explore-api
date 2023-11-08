@@ -5,7 +5,6 @@ import co.jp.vmware.tanzu.explore.api.record.FullText;
 import co.jp.vmware.tanzu.explore.api.record.Summary;
 import co.jp.vmware.tanzu.explore.api.service.FullTextService;
 import co.jp.vmware.tanzu.explore.api.service.SummaryService;
-import com.theokanning.openai.completion.CompletionChunk;
 import io.reactivex.Flowable;
 import org.springframework.ai.prompt.messages.Message;
 import org.springframework.http.MediaType;
@@ -45,10 +44,9 @@ public class AiController {
         List<FullText> fullTexts = fullTextService.getSessionContent(sessionId, sequence);
         Message message = fullTextService.getPrompt(fullTexts.get(0).content(), userText);
 
-        Flowable<CompletionChunk> result = openAiClient.streamCompletion(message.getContent(), 4000);
-
-        return result.filter(completionChunk ->
-                completionChunk.getChoices().get(0) != null).map(
-                completionChunk -> completionChunk.getChoices().get(0).getText());
+        return openAiClient.streamCompletion(message.getContent())
+                .filter(completionChunk ->
+                        completionChunk.getChoices().get(0) != null && completionChunk.getChoices().get(0).getMessage() != null && completionChunk.getChoices().get(0).getMessage().getContent() != null).map(
+                        completionChunk -> completionChunk.getChoices().get(0).getMessage().getContent());
     }
 }

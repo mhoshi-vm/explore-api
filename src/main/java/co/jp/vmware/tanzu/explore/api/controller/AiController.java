@@ -36,7 +36,7 @@ public class AiController {
     }
 
     @CrossOrigin
-    @PostMapping(path = "/summarize", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(path = "/summarize", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flowable<String> streamChat(@RequestParam String sessionId,
                                        @RequestParam(defaultValue = "1") Integer sequence,
                                        @RequestParam(defaultValue = "") String userText) {

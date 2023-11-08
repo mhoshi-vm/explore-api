@@ -30,7 +30,7 @@ public class SummaryService {
 
         @Override
         public Summary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Summary(rs.getInt("id"), rs.getString("session_id"), rs.getString("title"), rs.getString("content"));
+            return new Summary(rs.getInt("id"), rs.getString("session_id"), rs.getString("title"), "");
         }
 
     }
@@ -38,7 +38,7 @@ public class SummaryService {
     public List<Summary> get(String prompt, Integer limit) {
         SummaryMapper recordMapper = new SummaryMapper();
         return this.jdbcTemplate.query(
-                "SELECT id, session_id, title, content, pgml.embed(?, ?)::vector <-> embeddings AS distance FROM summary ORDER BY distance LIMIT ?",
+                "SELECT id, session_id, title, pgml.embed(?, ?)::vector <-> embeddings AS distance FROM summary ORDER BY distance LIMIT ?",
                 recordMapper, this.embeddingModels, prompt, limit);
     }
 
